@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Users = require('../users/users-model.js');
+const secrets = require('../config/secrets');
 
 // for endpoints beginning with /api/auth
 router.post('/register', (req, res) => {
@@ -32,6 +33,7 @@ router.post('/login', (req, res) => {
         // Add token to response
         res.status(200).json({
           message: `Welcome ${user.username}!`,
+          token
         });
       } else {
         res.status(401).json({ message: 'Invalid Credentials' });
@@ -53,9 +55,7 @@ function generateToken(user) {
     expiresIn: '1d',
   }
 
-  const secret = 'Is it secret? Is it safe?'
-
-  return jwt.sign(payload, secret, options) // 1st arg = where's the data, 2nd arg = secret used to verify signature, 3rd arg = options (how long good for, etc)
+  return jwt.sign(payload, secrets.jwtSecret, options) // 1st arg = where's the data, 2nd arg = secret used to verify signature, 3rd arg = options (how long good for, etc)
 
 }
 
